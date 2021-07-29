@@ -1,0 +1,49 @@
+service: iam.animeapis.com
+rules:
+  permissions:
+    - operation: RECONCILE
+      match: [{ prefix: iam.roles }]
+      values:
+        - id: iam.roles.get
+          title: IAM Role Get
+          description: "This is the IAM Role Get permission."
+        - id: iam.roles.list
+          title: IAM Role List
+          description: "This is the IAM Role List permission."
+    - operation: RECONCILE
+      match: [{ exact: iam.permissions.update }]
+      values:
+        - id: iam.permissions.update
+          title: IAM Permission Update
+          description: "This is the IAM Permission Update permission."
+  roles:
+    - operation: RECONCILE
+      match: [{ prefix: iam.viewer }]
+      values:
+        - id: iam.viewer
+          title: IAM Viewer
+          description: "This is the IAM Viewer role."
+          permissions:
+            - iam.roles.get
+            - iam.roles.list
+    - operation: RECONCILE
+      match: [{ exact: iam.admin }]
+      values:
+        - id: iam.admin
+          title: IAM Admin
+          description: "This is the IAM Admin role."
+          permissions:
+            - iam.permissions.update
+    - operation: MERGE
+      match: [{ exact: viewer }]
+      merge:
+        title: true
+        description: true
+        permissions: { prefix: iam. }
+      values:
+        - id: viewer
+          title: "Viewer"
+          description: "Read access to all resources."
+          permissions:
+            - iam.roles.get
+            - iam.roles.list
