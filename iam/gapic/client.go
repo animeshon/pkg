@@ -6,9 +6,9 @@ import (
 
 	gapic "github.com/animeapis/api-go-client/iam/admin/v1alpha1"
 	admin "github.com/animeapis/go-genproto/iam/admin/v1alpha1"
-	"github.com/sirupsen/logrus"
 
-	"github.com/googleapis/gax-go"
+	"github.com/googleapis/gax-go/v2"
+	"github.com/sirupsen/logrus"
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 )
