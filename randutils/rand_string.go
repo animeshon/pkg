@@ -18,6 +18,7 @@ var src = rand.NewSource(time.Now().UnixNano())
 // RandString Produces a random string with length stringSize.
 // 	The output string will only contain the basic uppercase and
 //	lowercase english letters.
+// https://stackoverflow.com/questions/22892120/how-to-generate-a-random-string-of-a-fixed-length-in-go
 func RandString(stringSize int) string {
 	b := make([]byte, stringSize)
 	// A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
