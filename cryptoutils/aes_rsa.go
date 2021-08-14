@@ -8,8 +8,12 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
+	"crypto/x509"
+	"encoding/asn1"
 	"encoding/binary"
+	"encoding/pem"
 	"fmt"
+	"io/ioutil"
 )
 
 func EncryptAsymmetricAES(publicKey *rsa.PublicKey, plaintext []byte) ([]byte, error) {
@@ -128,4 +132,40 @@ func DecryptAsymmetricAES(privateKey *rsa.PrivateKey, ciphertext []byte) ([]byte
 	mode.CryptBlocks(plaintext, ciphertext[256+8+aes.BlockSize:])
 
 	return plaintext[:origSize], nil
+}
+
+// PublicKeyAsymmetricAES returns the AES asymmentric (RSA) public key from a file.
+func PublicKeyAsymmetricAES(filename string) (*rsa.PublicKey, error) {
+	publicKey, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, fmt.Errorf("error while loading public key from PEM file: %v", err)
+	}
+
+	block, _ := pem.Decode([]byte(publicKey))
+	if block == nil || block.Type != "PUBLIC KEY" {
+		return nil, fmt.Errorf("failed to decode PEM block containing public key")
+	}
+
+	var key rsa.PublicKey
+	_, err = asn1.Unmarshal(block.Bytes, &key)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal public key: %v", err)
+	}
+
+	return &key, nil
+}
+
+// PrivateKeyAsymmetricAES returns the AES asymmentric (RSA) private key from a file.
+func PrivateKeyAsymmetricAES(filename string) (*rsa.PrivateKey, error) {
+	privateKey, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, fmt.Errorf("error while loading private key from PEM file: %v", err)
+	}
+
+	block, _ := pem.Decode([]byte(privateKey))
+	if block == nil || block.Type != "PRIVATE KEY" {
+		return nil, fmt.Errorf("failed to decode PEM block containing private key")
+	}
+
+	return x509.ParsePKCS1PrivateKey(block.Bytes)
 }
