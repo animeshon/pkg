@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+var VisionAPI = "//vision.animeapis.com/"
+
 func ImageAnnotationParentName(name string) (*Name, bool) {
 	tokens := strings.Split(name, "/")
 	if len(tokens) != 2 {
@@ -52,4 +54,12 @@ func ImageAnnotationName(name string) (*Name, bool) {
 		Collection: tokens[2],
 		Id:         albumId,
 	}, true
+}
+
+func ImageAnnotationFullName(name string) (*Name, bool) {
+	if !strings.HasPrefix(name, VisionAPI) {
+		return nil, false
+	}
+
+	return ImageAnnotationName(strings.TrimPrefix(name, VisionAPI))
 }

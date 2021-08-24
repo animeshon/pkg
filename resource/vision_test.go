@@ -13,10 +13,14 @@ func TestVisionAPI(t *testing.T) {
 	assert.Equal(t, "users", parent.Collection)
 	assert.Equal(t, int64(3134441396375598), parent.Id)
 
-	album, ok := ImageAnnotationName("users/3134441396375598/imageAnnotations/6097286400577570")
+	annotation, ok := ImageAnnotationName("users/3134441396375598/imageAnnotations/6097286400577570")
 	require.True(t, ok)
-	assert.Equal(t, "imageAnnotations", album.Collection)
-	assert.Equal(t, int64(6097286400577570), album.Id)
-	assert.Equal(t, "users", album.Parent.Collection)
-	assert.Equal(t, int64(3134441396375598), album.Parent.Id)
+	assert.Equal(t, "imageAnnotations", annotation.Collection)
+	assert.Equal(t, int64(6097286400577570), annotation.Id)
+	assert.Equal(t, "users", annotation.Parent.Collection)
+	assert.Equal(t, int64(3134441396375598), annotation.Parent.Id)
+
+	annotationFull, ok := ImageAnnotationFullName("//vision.animeapis.com/users/3134441396375598/imageAnnotations/6097286400577570")
+	require.True(t, ok)
+	assert.Equal(t, annotation.String(), annotationFull.String())
 }

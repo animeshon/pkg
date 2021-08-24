@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+var WebCacheAPI = "//webcache.animeapis.com/"
+
 func CacheName(name string) (*Name, string, bool) {
 	name, revision := ParseRevision(name)
 
@@ -26,4 +28,12 @@ func CacheName(name string) (*Name, string, bool) {
 		Collection: tokens[0],
 		Id:         parentId,
 	}, revision, true
+}
+
+func CacheNameFullName(name string) (*Name, string, bool) {
+	if !strings.HasPrefix(name, WebCacheAPI) {
+		return nil, "", false
+	}
+
+	return CacheName(strings.TrimPrefix(name, WebCacheAPI))
 }

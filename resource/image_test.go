@@ -28,4 +28,12 @@ func TestImageAPI(t *testing.T) {
 	assert.Equal(t, int64(6097286400577570), image.Parent.Id)
 	assert.Equal(t, "users", image.Parent.Parent.Collection)
 	assert.Equal(t, int64(3134441396375598), image.Parent.Parent.Id)
+
+	albumFull, ok := AlbumFullName("//image.animeapis.com/users/3134441396375598/albums/6097286400577570")
+	require.True(t, ok)
+	assert.Equal(t, album.String(), albumFull.String())
+
+	imageFull, ok := ImageFullName("//image.animeapis.com/users/3134441396375598/albums/6097286400577570/images/6097611928899618")
+	require.True(t, ok)
+	assert.Equal(t, image.String(), imageFull.String())
 }
