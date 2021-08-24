@@ -15,7 +15,7 @@ func CacheName(name string) (*Name, string, bool) {
 		return nil, "", false
 	}
 
-	parentId, err := strconv.ParseInt(tokens[1], 10, 64)
+	cacheId, err := strconv.ParseInt(tokens[1], 10, 64)
 	if err != nil {
 		return nil, "", false
 	}
@@ -26,7 +26,7 @@ func CacheName(name string) (*Name, string, bool) {
 
 	return &Name{
 		Collection: tokens[0],
-		Id:         parentId,
+		Id:         cacheId,
 	}, revision, true
 }
 

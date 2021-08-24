@@ -39,7 +39,7 @@ func ImageAnnotationName(name string) (*Name, bool) {
 		return nil, false
 	}
 
-	albumId, err := strconv.ParseInt(tokens[3], 10, 64)
+	annotationId, err := strconv.ParseInt(tokens[3], 10, 64)
 	if err != nil {
 		return nil, false
 	}
@@ -52,7 +52,39 @@ func ImageAnnotationName(name string) (*Name, bool) {
 		Parent: parent,
 
 		Collection: tokens[2],
-		Id:         albumId,
+		Id:         annotationId,
+	}, true
+}
+
+func ImageAnalysisName(name string) (*Name, bool) {
+	tokens := strings.Split(name, "/")
+	if len(tokens) != 8 {
+		return nil, false
+	}
+
+	parent, ok := ImageName(strings.Join(tokens[:6], "/"))
+	if !ok {
+		return nil, false
+	}
+
+	analysisId := int64(-1)
+	if tokens[7] != "latest" {
+		var err error
+		analysisId, err = strconv.ParseInt(tokens[7], 10, 64)
+		if err != nil {
+			return nil, false
+		}
+	}
+
+	if tokens[6] != "analyses" {
+		return nil, false
+	}
+
+	return &Name{
+		Parent: parent,
+
+		Collection: tokens[6],
+		Id:         analysisId,
 	}, true
 }
 
@@ -62,4 +94,12 @@ func ImageAnnotationFullName(name string) (*Name, bool) {
 	}
 
 	return ImageAnnotationName(strings.TrimPrefix(name, VisionAPI))
+}
+
+func ImageAnalysisFullName(name string) (*Name, bool) {
+	if !strings.HasPrefix(name, VisionAPI) {
+		return nil, false
+	}
+
+	return ImageAnalysisName(strings.TrimPrefix(name, VisionAPI))
 }
