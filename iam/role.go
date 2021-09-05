@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	admin "github.com/animeapis/go-genproto/iam/admin/v1alpha1"
+	"github.com/sirupsen/logrus"
 	fieldmask "google.golang.org/protobuf/types/known/fieldmaskpb"
 
 	"google.golang.org/api/iterator"
@@ -94,6 +95,7 @@ func (r *Client) ListRoles(ctx context.Context, matches []*RuleMatch) ([]*admin.
 					return nil, fmt.Errorf("match[%d]: %s", k, err)
 				}
 
+				logrus.Infof("fetched role '%s' with %d included permissions", role.Name, len(role.IncludedPermissions))
 				roles = append(roles, role)
 			}
 		}

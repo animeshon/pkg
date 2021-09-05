@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	admin "github.com/animeapis/go-genproto/iam/admin/v1alpha1"
+	"github.com/sirupsen/logrus"
 	fieldmask "google.golang.org/protobuf/types/known/fieldmaskpb"
 
 	"google.golang.org/api/iterator"
@@ -82,6 +83,7 @@ func (r *Client) ListPermissions(ctx context.Context, matches []*RuleMatch) ([]*
 					return nil, fmt.Errorf("match[%d]: %s", k, err)
 				}
 
+				logrus.Infof("fetched permission '%s'", permission.Name)
 				permissions = append(permissions, permission)
 			}
 		}
