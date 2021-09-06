@@ -23,8 +23,8 @@ func ImageAnnotationParentName(name string) (*Name, bool) {
 	}
 
 	return &Name{
-		Collection: tokens[0],
-		Id:         parentId,
+		collection: tokens[0],
+		id:         parentId,
 	}, true
 }
 
@@ -51,8 +51,8 @@ func ImageAnnotationName(name string) (*Name, bool) {
 	return &Name{
 		Parent: parent,
 
-		Collection: tokens[2],
-		Id:         annotationId,
+		collection: tokens[2],
+		id:         annotationId,
 	}, true
 }
 
@@ -83,8 +83,8 @@ func ImageAnalysisName(name string) (*Name, bool) {
 	return &Name{
 		Parent: parent,
 
-		Collection: tokens[6],
-		Id:         analysisId,
+		collection: tokens[6],
+		id:         analysisId,
 	}, true
 }
 

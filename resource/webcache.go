@@ -25,12 +25,12 @@ func CacheName(name string) (*Name, string, bool) {
 	}
 
 	return &Name{
-		Collection: tokens[0],
-		Id:         cacheId,
+		collection: tokens[0],
+		id:         cacheId,
 	}, revision, true
 }
 
-func CacheNameFullName(name string) (*Name, string, bool) {
+func CacheFullName(name string) (*Name, string, bool) {
 	if !strings.HasPrefix(name, WebCacheAPI) {
 		return nil, "", false
 	}

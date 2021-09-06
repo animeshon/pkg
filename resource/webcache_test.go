@@ -10,17 +10,17 @@ import (
 func TestWebCacheAPI(t *testing.T) {
 	cache, revision, ok := CacheName("caches/3134441396375598")
 	require.True(t, ok)
-	assert.Equal(t, "caches", cache.Collection)
+	assert.Equal(t, "caches", cache.collection)
 	assert.Empty(t, revision)
-	assert.Equal(t, int64(3134441396375598), cache.Id)
+	assert.Equal(t, int64(3134441396375598), cache.id)
 
 	cache, revision, ok = CacheName("caches/3134441396375598@abcd1234")
 	require.True(t, ok)
-	assert.Equal(t, "caches", cache.Collection)
+	assert.Equal(t, "caches", cache.collection)
 	assert.Equal(t, "abcd1234", revision)
-	assert.Equal(t, int64(3134441396375598), cache.Id)
+	assert.Equal(t, int64(3134441396375598), cache.id)
 
-	cacheFull, _, ok := CacheNameFullName("//webcache.animeapis.com/caches/3134441396375598")
+	cacheFull, _, ok := CacheFullName("//webcache.animeapis.com/caches/3134441396375598")
 	require.True(t, ok)
 	assert.Equal(t, cache.String(), cacheFull.String())
 }

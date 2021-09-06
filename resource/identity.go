@@ -23,12 +23,12 @@ func UserName(name string) (*Name, bool) {
 	}
 
 	return &Name{
-		Collection: tokens[0],
-		Id:         userId,
+		collection: tokens[0],
+		id:         userId,
 	}, true
 }
 
-func UserNameFullName(name string) (*Name, bool) {
+func UserFullName(name string) (*Name, bool) {
 	if !strings.HasPrefix(name, IdentityAPI) {
 		return nil, false
 	}

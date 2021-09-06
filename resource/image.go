@@ -23,8 +23,8 @@ func AlbumParentName(name string) (*Name, bool) {
 	}
 
 	return &Name{
-		Collection: tokens[0],
-		Id:         parentId,
+		collection: tokens[0],
+		id:         parentId,
 	}, true
 }
 
@@ -51,8 +51,8 @@ func AlbumName(name string) (*Name, bool) {
 	return &Name{
 		Parent: parent,
 
-		Collection: tokens[2],
-		Id:         albumId,
+		collection: tokens[2],
+		id:         albumId,
 	}, true
 }
 
@@ -79,8 +79,8 @@ func ImageName(name string) (*Name, bool) {
 	return &Name{
 		Parent: parent,
 
-		Collection: tokens[4],
-		Id:         imageId,
+		collection: tokens[4],
+		id:         imageId,
 	}, true
 }
 

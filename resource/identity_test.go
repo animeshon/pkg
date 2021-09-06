@@ -10,10 +10,10 @@ import (
 func TestIdentityAPI(t *testing.T) {
 	user, ok := UserName("users/3134441396375598")
 	require.True(t, ok)
-	assert.Equal(t, "users", user.Collection)
-	assert.Equal(t, int64(3134441396375598), user.Id)
+	assert.Equal(t, "users", user.collection)
+	assert.Equal(t, int64(3134441396375598), user.id)
 
-	userFull, ok := UserNameFullName("//identity.animeapis.com/users/3134441396375598")
+	userFull, ok := UserFullName("//identity.animeapis.com/users/3134441396375598")
 	require.True(t, ok)
 	assert.Equal(t, user.String(), userFull.String())
 }
