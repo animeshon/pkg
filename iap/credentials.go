@@ -34,12 +34,12 @@ func FromIncomingContext(ctx context.Context) (*Credentials, bool) {
 		creds.Principal = xGoogIapPrincipal[0]
 	}
 
-	xGoogIapUserId := headers.Get("x-goog-iap-user-id")
+	xGoogIapUserId := headers.Get("x-goog-authenticated-user-id")
 	if len(xGoogIapUserId) != 0 {
 		creds.UserId = xGoogIapUserId[0]
 	}
 
-	xGoogUserEmail := headers.Get("x-goog-iap-user-email")
+	xGoogUserEmail := headers.Get("x-goog-authenticated-user-email")
 	if len(xGoogUserEmail) != 0 {
 		creds.UserEmail = xGoogUserEmail[0]
 	}
