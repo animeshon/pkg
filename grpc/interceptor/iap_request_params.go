@@ -26,6 +26,20 @@ func isInternal(md metadata.MD) bool {
 	return yes
 }
 
+func isAnonymous(md metadata.MD) bool {
+	anonymous := md.Get("x-goog-iap-anonymous")
+	if len(anonymous) == 0 {
+		return false
+	}
+
+	yes, err := strconv.ParseBool(anonymous[0])
+	if err != nil {
+		return false
+	}
+
+	return yes
+}
+
 // IdentityAwareProxyRequestParams returns a new unary client interceptor for x-goog-iap-request-params.
 func IdentityAwareProxyRequestParams() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
@@ -34,8 +48,9 @@ func IdentityAwareProxyRequestParams() grpc.UnaryServerInterceptor {
 			return nil, protoerrors.InvalidArgument("The request is missing incoming metadata.").Err()
 		}
 
-		// Bypass Identity-Aware Proxy checks for request coming from the intranet.
-		if isInternal(md) {
+		// Bypass Identity-Aware Proxy checks for anonymous requests or requests
+		// coming from the intranet.
+		if isInternal(md) || isAnonymous(md) {
 			return handler(ctx, req)
 		}
 
