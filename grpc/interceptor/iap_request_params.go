@@ -2,12 +2,13 @@ package interceptor
 
 import (
 	"context"
-	"encoding/json"
 	"net/url"
+	"reflect"
 	"strconv"
+	"strings"
 
 	"github.com/animeshon/pkg/protoerrors"
-	"github.com/sirupsen/logrus"
+	"github.com/golang/protobuf/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
@@ -40,6 +41,51 @@ func isAnonymous(md metadata.MD) bool {
 	return yes
 }
 
+func walk(tree []string, i interface{}, params map[string][]string) map[string][]string {
+	value := reflect.ValueOf(i)
+
+	switch value.Kind() {
+	case reflect.Ptr:
+		if !value.Elem().IsValid() {
+			return params
+		}
+
+		return walk(tree, value.Elem().Interface(), params)
+	case reflect.Interface:
+		return walk(tree, value.Elem().Interface(), params)
+	case reflect.Struct:
+		for j := 0; j < value.NumField(); j += 1 {
+			if !value.Field(j).CanInterface() {
+				continue
+			}
+
+			tag, ok := reflect.TypeOf(i).Field(j).Tag.Lookup("protobuf")
+			if !ok {
+				continue
+			}
+
+			properties := proto.Properties{}
+			properties.Parse(tag)
+
+			walk(append(tree, properties.OrigName), value.Field(j).Interface(), params)
+		}
+	case reflect.String:
+		index := strings.Join(tree, ".")
+		param := params[index]
+		if len(param) == 0 {
+			return params
+		}
+
+		if param[0] == value.Interface().(string) {
+			delete(params, index)
+		}
+
+		return params
+	}
+
+	return params
+}
+
 // IdentityAwareProxyRequestParams returns a new unary client interceptor for x-goog-iap-request-params.
 func IdentityAwareProxyRequestParams() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
@@ -64,11 +110,9 @@ func IdentityAwareProxyRequestParams() grpc.UnaryServerInterceptor {
 			return nil, protoerrors.InvalidArgument("The request has invalid IAP headers.").Err()
 		}
 
-		body, _ := json.Marshal(req)
-		logrus.Infof("[debug] request-params = %s", string(body))
-
-		for key, value := range params {
-			logrus.Infof("[debug] request-params = %s: %v", key, value)
+		remainder := walk(nil, req, params)
+		if len(remainder) > 0 {
+			return nil, protoerrors.InvalidArgument("The request body did not match the request parameters specified in the header or path segments.").Err()
 		}
 
 		return handler(ctx, req)
