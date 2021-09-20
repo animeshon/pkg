@@ -27,26 +27,26 @@ func isInternal(md metadata.MD) bool {
 }
 
 // IdentityAwareProxyRequestParams returns a new unary client interceptor for x-goog-iap-request-params.
-func IdentityAwareProxyRequestParams() grpc.UnaryClientInterceptor {
-	return func(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+func IdentityAwareProxyRequestParams() grpc.UnaryServerInterceptor {
+	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
 		md, ok := metadata.FromIncomingContext(ctx)
 		if !ok {
-			return protoerrors.InvalidArgument("The request is missing incoming metadata.").Err()
+			return nil, protoerrors.InvalidArgument("The request is missing incoming metadata.").Err()
 		}
 
 		// Bypass Identity-Aware Proxy checks for request coming from the intranet.
 		if isInternal(md) {
-			return invoker(ctx, method, req, reply, cc, opts...)
+			return handler(ctx, req)
 		}
 
 		header := md.Get("x-goog-iap-request-params")
 		if len(header) == 0 {
-			return protoerrors.InvalidArgument("The request is missing required IAP headers.").Err()
+			return nil, protoerrors.InvalidArgument("The request is missing required IAP headers.").Err()
 		}
 
 		params, err := url.ParseQuery(header[0])
 		if err != nil {
-			return protoerrors.InvalidArgument("The request has invalid IAP headers.").Err()
+			return nil, protoerrors.InvalidArgument("The request has invalid IAP headers.").Err()
 		}
 
 		body, _ := json.Marshal(req)
@@ -56,6 +56,6 @@ func IdentityAwareProxyRequestParams() grpc.UnaryClientInterceptor {
 			logrus.Infof("[debug] request-params = %s: %v", key, value)
 		}
 
-		return invoker(ctx, method, req, reply, cc, opts...)
+		return handler(ctx, req)
 	}
 }
