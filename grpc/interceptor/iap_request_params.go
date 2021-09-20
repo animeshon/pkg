@@ -2,6 +2,7 @@ package interceptor
 
 import (
 	"context"
+	"log"
 	"net/url"
 	"reflect"
 	"strconv"
@@ -110,8 +111,12 @@ func IdentityAwareProxyRequestParams() grpc.UnaryServerInterceptor {
 			return nil, protoerrors.InvalidArgument("The request has invalid IAP headers.").Err()
 		}
 
+		log.Printf("req: %v", req)
+		log.Printf("params: %v", params)
+
 		remainder := walk(nil, req, params)
 		if len(remainder) > 0 {
+			log.Printf("remainder: %v", remainder)
 			return nil, protoerrors.InvalidArgument("The request body did not match the request parameters specified in the header or path segments.").Err()
 		}
 
