@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/url"
 	"reflect"
-	"strconv"
 	"strings"
 
 	"github.com/animeshon/pkg/protoerrors"
@@ -13,34 +12,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
-
-func isInternal(md metadata.MD) bool {
-	internal := md.Get("x-envoy-internal")
-	if len(internal) == 0 {
-		return false
-	}
-
-	yes, err := strconv.ParseBool(internal[0])
-	if err != nil {
-		return false
-	}
-
-	return yes
-}
-
-func isAnonymous(md metadata.MD) bool {
-	anonymous := md.Get("x-goog-iap-anonymous")
-	if len(anonymous) == 0 {
-		return false
-	}
-
-	yes, err := strconv.ParseBool(anonymous[0])
-	if err != nil {
-		return false
-	}
-
-	return yes
-}
 
 func walk(tree []string, i interface{}, params map[string][]string) map[string][]string {
 	value := reflect.ValueOf(i)
@@ -95,19 +66,17 @@ func IdentityAwareProxyRequestParams() grpc.UnaryServerInterceptor {
 			return nil, protoerrors.InvalidArgument("The request is missing incoming metadata.").Err()
 		}
 
-		// Bypass Identity-Aware Proxy checks for anonymous requests or requests
-		// coming from the intranet.
-		if isInternal(md) || isAnonymous(md) {
-			return handler(ctx, req)
-		}
-
-		for k, v := range md {
-			log.Printf("header %s: %v", k, v)
-		}
-
+		// If no 'x-goog-iap-request-params' header is found send the request to the
+		// next interceptor.
+		//
+		// The IAP assertion header combined with other headers should be enough to
+		// confirm that the request came from a trusted source.
+		//
+		// The responsibility of checking IAP headers is not delegated to this
+		// interceptor.
 		header := md.Get("x-goog-iap-request-params")
 		if len(header) == 0 {
-			return nil, protoerrors.InvalidArgument("The request is missing required IAP headers.").Err()
+			return handler(ctx, req)
 		}
 
 		params, err := url.ParseQuery(header[0])
