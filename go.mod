@@ -3,10 +3,12 @@ module github.com/animeshon/pkg
 go 1.16
 
 require (
+	github.com/alecthomas/participle/v2 v2.0.0-alpha7
 	github.com/animeapis/api-go-client v0.0.0-20210724154424-10b22e599d8c
 	github.com/animeapis/go-genproto v0.0.0-20210724154426-d90a813a45ff
 	github.com/form3tech-oss/jwt-go v3.2.3+incompatible
 	github.com/gobwas/glob v0.2.3
+	github.com/golang/protobuf v1.5.2
 	github.com/googleapis/gax-go v1.0.3
 	github.com/googleapis/gax-go/v2 v2.0.5
 	github.com/patrickmn/go-cache v2.1.0+incompatible

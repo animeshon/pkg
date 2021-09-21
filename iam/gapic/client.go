@@ -73,8 +73,8 @@ func (c *IamClientImpl) UpdateRole(ctx context.Context, req *admin.UpdateRoleReq
 	return c.internalClient.UpdateRole(ctx, req, opts...)
 }
 func (c *IamClientImpl) DeleteRole(ctx context.Context, req *admin.DeleteRoleRequest, opts ...gax.CallOption) error {
-	logrus.Errorf("the following role must be deleted manually: %s", req.GetName())
-	return nil
+	logrus.Infof("the following role will be deleted: %s", req.GetName())
+	return c.internalClient.DeleteRole(ctx, req, opts...)
 }
 func (c *IamClientImpl) GetPermission(ctx context.Context, req *admin.GetPermissionRequest, opts ...gax.CallOption) (*admin.Permission, error) {
 	return c.internalClient.GetPermission(ctx, req, opts...)

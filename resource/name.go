@@ -8,38 +8,71 @@ import (
 type Name struct {
 	Parent *Name
 
-	Collection string
-	Id         int64
+	collection string
+	id         interface{}
 }
 
-func GenerateName(rawName string) *Name {
-	nameParts := strings.Split(rawName, "/")
-	nameCollection := nameParts[0]
-	nameID, _ := strconv.ParseInt(nameParts[1], 10, 64)
-	return NewName(nameCollection, nameID)
-}
-
-func NewName(collection string, id int64) *Name {
+func NewName(collection string, id string) *Name {
 	return &Name{
-		Collection: collection,
-		Id:         id,
+		collection: collection,
+		id:         id,
+	}
+}
+
+func NewNameInt64(collection string, id int64) *Name {
+	return &Name{
+		collection: collection,
+		id:         id,
 	}
 }
 
 func (resource *Name) String() string {
-	name := resource.Collection + "/" + strconv.FormatInt(resource.Id, 10)
+	var name []string
+
 	if resource.Parent != nil {
-		name = resource.Parent.String() + "/" + name
+		name = append(name, resource.Parent.String())
 	}
 
-	return name
+	if len(resource.collection) != 0 {
+		name = append(name, resource.collection)
+	}
+
+	if resource.id != nil {
+		switch resource.id.(type) {
+		case string:
+			name = append(name, resource.id.(string))
+		case int64:
+			name = append(name, strconv.FormatInt(resource.id.(int64), 10))
+		default:
+			panic("resource id must be a string or an int64")
+		}
+	}
+
+	return strings.Join(name, "/")
 }
 
-func (resource *Name) Child(collection string, id int64) *Name {
+func (resource *Name) Child(collection string, id string) *Name {
 	return &Name{
 		Parent: resource,
 
-		Collection: collection,
-		Id:         id,
+		collection: collection,
+		id:         id,
 	}
+}
+
+func (resource *Name) ChildInt64(collection string, id int64) *Name {
+	return &Name{
+		Parent: resource,
+
+		collection: collection,
+		id:         id,
+	}
+}
+
+func (resource *Name) ID() interface{} {
+	return resource.id
+}
+
+func (resource *Name) Collection() string {
+	return resource.collection
 }

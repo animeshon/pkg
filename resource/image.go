@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+var ImageAPI = "//image.animeapis.com/"
+
 func AlbumParentName(name string) (*Name, bool) {
 	tokens := strings.Split(name, "/")
 	if len(tokens) != 2 {
@@ -21,8 +23,8 @@ func AlbumParentName(name string) (*Name, bool) {
 	}
 
 	return &Name{
-		Collection: tokens[0],
-		Id:         parentId,
+		collection: tokens[0],
+		id:         parentId,
 	}, true
 }
 
@@ -49,8 +51,8 @@ func AlbumName(name string) (*Name, bool) {
 	return &Name{
 		Parent: parent,
 
-		Collection: tokens[2],
-		Id:         albumId,
+		collection: tokens[2],
+		id:         albumId,
 	}, true
 }
 
@@ -77,7 +79,23 @@ func ImageName(name string) (*Name, bool) {
 	return &Name{
 		Parent: parent,
 
-		Collection: tokens[4],
-		Id:         imageId,
+		collection: tokens[4],
+		id:         imageId,
 	}, true
+}
+
+func AlbumFullName(name string) (*Name, bool) {
+	if !strings.HasPrefix(name, ImageAPI) {
+		return nil, false
+	}
+
+	return AlbumName(strings.TrimPrefix(name, ImageAPI))
+}
+
+func ImageFullName(name string) (*Name, bool) {
+	if !strings.HasPrefix(name, ImageAPI) {
+		return nil, false
+	}
+
+	return ImageName(strings.TrimPrefix(name, ImageAPI))
 }
