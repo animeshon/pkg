@@ -2,6 +2,8 @@ package validation
 
 import (
 	"net/url"
+	"strconv"
+	"strings"
 
 	"github.com/gobwas/glob"
 	"k8s.io/apimachinery/pkg/util/validation/field"
@@ -17,6 +19,15 @@ func ValidateResourceName(name, pattern string, fldPath *field.Path) ErrorList {
 		allErrs = append(allErrs, Invalid(fldPath, name, "resource name does not match a valid pattern"))
 	}
 
+	// Make sure the ids are int 64
+	resourceParts := strings.Split(name, "/")
+	categoriesCount := len(resourceParts) / 2
+	for catNumber := 0; catNumber < categoriesCount; catNumber++ {
+		_, err := strconv.ParseInt(resourceParts[catNumber*2+1], 10, 64)
+		if err != nil {
+			allErrs = append(allErrs, Invalid(fldPath, name, "resource ids must be valid int64"))
+		}
+	}
 	return allErrs
 }
 
