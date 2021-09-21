@@ -101,6 +101,10 @@ func IdentityAwareProxyRequestParams() grpc.UnaryServerInterceptor {
 			return handler(ctx, req)
 		}
 
+		for k, v := range md {
+			log.Printf("header %s: %v", k, v)
+		}
+
 		header := md.Get("x-goog-iap-request-params")
 		if len(header) == 0 {
 			return nil, protoerrors.InvalidArgument("The request is missing required IAP headers.").Err()
