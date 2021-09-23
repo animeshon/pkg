@@ -26,7 +26,7 @@ func (list ErrorList) ToProtoError() *protoerrors.Error {
 		return protoerrors.InvalidArgument("<nil>").BadRequest(validations...)
 	}
 
-	return protoerrors.InvalidArgument(list[0].Error).BadRequest(validations...)
+	return protoerrors.InvalidArgument(list[0].Field + ": " + list[0].Error).BadRequest(validations...)
 }
 
 func Required(field *field.Path) *Error {

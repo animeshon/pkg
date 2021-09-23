@@ -4,6 +4,8 @@ import (
 	"net/url"
 
 	"github.com/gobwas/glob"
+	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/types/known/fieldmaskpb"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
@@ -30,6 +32,27 @@ func ValidateURI(uri string, fldPath *field.Path) ErrorList {
 	_, err := url.Parse(uri)
 	if err != nil {
 		return append(allErrs, Invalid(fldPath, uri, "could not parse URI"))
+	}
+
+	return allErrs
+}
+
+func ValidateFieldMask(mask *fieldmaskpb.FieldMask, m protoreflect.ProtoMessage, fldPath *field.Path) ErrorList {
+	allErrs := ErrorList{}
+
+	mask.Normalize()
+	if !mask.IsValid(m) {
+		return append(allErrs, Invalid(fldPath, mask, "the specified field mask is invalid"))
+	}
+
+	return allErrs
+}
+
+func ValidatePageSize(size int32, fldPath *field.Path) ErrorList {
+	allErrs := ErrorList{}
+
+	if size < 0 {
+		allErrs = append(allErrs, Invalid(fldPath, size, "page size must be non-negative"))
 	}
 
 	return allErrs
