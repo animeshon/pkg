@@ -40,6 +40,10 @@ func ValidateURI(uri string, fldPath *field.Path) ErrorList {
 func ValidateFieldMask(mask *fieldmaskpb.FieldMask, m protoreflect.ProtoMessage, fldPath *field.Path) ErrorList {
 	allErrs := ErrorList{}
 
+	if mask == nil {
+		return allErrs
+	}
+
 	mask.Normalize()
 	if !mask.IsValid(m) {
 		return append(allErrs, Invalid(fldPath, mask, "the specified field mask is invalid"))
