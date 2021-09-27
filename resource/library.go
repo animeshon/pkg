@@ -39,13 +39,18 @@ func PlaylistName(name string) (*Name, bool) {
 		return nil, false
 	}
 
-	playlistId, err := strconv.ParseInt(tokens[3], 10, 64)
-	if err != nil {
+	if tokens[2] != "playlists" {
 		return nil, false
 	}
 
-	if tokens[2] != "playlists" {
-		return nil, false
+	playlistId, err := strconv.ParseInt(tokens[3], 10, 64)
+	if err != nil {
+		return &Name{
+			Parent: parent,
+
+			collection: tokens[2],
+			id:         tokens[3],
+		}, true
 	}
 
 	return &Name{

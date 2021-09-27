@@ -20,6 +20,13 @@ func TestLibraryAPI(t *testing.T) {
 	assert.Equal(t, "users", playlist.Parent.collection)
 	assert.Equal(t, int64(3134441396375598), playlist.Parent.id)
 
+	alias, ok := PlaylistName("users/3134441396375598/playlists/later")
+	require.True(t, ok)
+	assert.Equal(t, "playlists", alias.collection)
+	assert.Equal(t, "later", alias.id)
+	assert.Equal(t, "users", alias.Parent.collection)
+	assert.Equal(t, int64(3134441396375598), alias.Parent.id)
+
 	item, ok := PlaylistItemName("users/3134441396375598/playlists/6097286400577570/items/6097611928899618")
 	require.True(t, ok)
 	assert.Equal(t, "items", item.collection)
