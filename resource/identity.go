@@ -13,13 +13,16 @@ func UserName(name string) (*Name, bool) {
 		return nil, false
 	}
 
-	userId, err := strconv.ParseInt(tokens[1], 10, 64)
-	if err != nil {
+	if tokens[0] != "users" {
 		return nil, false
 	}
 
-	if tokens[0] != "users" {
-		return nil, false
+	userId, err := strconv.ParseInt(tokens[1], 10, 64)
+	if err != nil {
+		return &Name{
+			collection: tokens[0],
+			id:         tokens[1],
+		}, true
 	}
 
 	return &Name{
