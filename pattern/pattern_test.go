@@ -28,6 +28,7 @@ func TestMatchString(t *testing.T) {
 		{false, true, "users/{user}/albums/{album}", "users/123/albums/123/images/123"},
 
 		{true, true, "users/{user}", "users/123456"},
+		{true, true, "users/{user.name}", "users/123456"},
 		{true, true, "users/{user}/albums/{album}", "users/123/albums/123"},
 	} {
 		assert.Equal(t, i.expected, MatchString(i.pattern, i.value, i.all))
@@ -57,6 +58,7 @@ func TestFindString(t *testing.T) {
 		{false, true, nil, "users/{user}/albums/{album}", "users/123/albums/123/images/123"},
 
 		{true, true, map[string]string{"user": "123456"}, "users/{user}", "users/123456"},
+		{true, true, map[string]string{"user.name": "123456"}, "users/{user.name}", "users/123456"},
 		{true, true, map[string]string{"user": "123", "album": "123"}, "users/{user}/albums/{album}", "users/123/albums/123"},
 	} {
 		vars, ok := FindString(i.pattern, i.value, i.all)
@@ -81,6 +83,7 @@ func TestFindStringSubmatch(t *testing.T) {
 		{false, "users/{user}/albums/{album}", "users/123/albums/", ""},
 
 		{true, "users/{user}", "users/123456", "users/123456"},
+		{true, "users/{user.name}", "users/123456", "users/123456"},
 		{true, "users/{user}", "users/123456/albums/12345", "users/123456"},
 		{true, "users/{user}/albums/{album}", "users/123/albums/123", "users/123/albums/123"},
 		{true, "users/{user}/albums/{album}", "users/123/albums/123/images/123", "users/123/albums/123"},
@@ -105,6 +108,7 @@ func TestReplaceString(t *testing.T) {
 		{false, map[string]string{"user": "123"}, "users/{user}/albums/{album}", ""},
 
 		{true, map[string]string{"user": "123456"}, "users/{user}", "users/123456"},
+		{true, map[string]string{"user.name": "123456"}, "users/{user.name}", "users/123456"},
 		{true, map[string]string{"user": "123", "album": "123"}, "users/{user}/albums/{album}", "users/123/albums/123"},
 	} {
 		value, ok := ReplaceString(i.pattern, i.variables)

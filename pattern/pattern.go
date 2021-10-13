@@ -16,7 +16,7 @@ type Segment struct {
 }
 
 type Variable struct {
-	Value string `parser:"'{' @Ident '}'"`
+	Value string `parser:"'{' @(Ident ( '.' Ident )*) '}'"`
 }
 
 var parser = participle.MustBuild(&Template{})
