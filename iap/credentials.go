@@ -2,19 +2,22 @@ package iap
 
 import (
 	"context"
+	"strconv"
 
 	"google.golang.org/grpc/metadata"
 )
 
 type Credentials struct {
-	Principal string
+	AuthenticationIdentity string
 
 	UserId    string
 	UserEmail string
+
+	Anonymous bool
 }
 
 func (creds *Credentials) Authenticated() bool {
-	return len(creds.Principal) != 0 && creds.Principal != "anonymous"
+	return len(creds.AuthenticationIdentity) != 0
 }
 
 func (creds *Credentials) GetPrincipal() error {
@@ -31,7 +34,12 @@ func FromIncomingContext(ctx context.Context) (*Credentials, bool) {
 
 	xGoogIapPrincipal := headers.Get("x-goog-iap-principal")
 	if len(xGoogIapPrincipal) != 0 {
-		creds.Principal = xGoogIapPrincipal[0]
+		creds.AuthenticationIdentity = xGoogIapPrincipal[0]
+	}
+
+	xGoogIapAnonymous := headers.Get("x-goog-iap-anonymous")
+	if len(xGoogIapAnonymous) != 0 {
+		creds.Anonymous, _ = strconv.ParseBool(xGoogIapAnonymous[0])
 	}
 
 	xGoogIapUserId := headers.Get("x-goog-authenticated-user-id")
