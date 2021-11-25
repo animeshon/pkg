@@ -11,7 +11,7 @@ type Template struct {
 }
 
 type Segment struct {
-	Value    string    `parser:"@Ident | "`
+	Value    string    `parser:"@(Ident | '-') | "`
 	Variable *Variable `parser:"@@"`
 }
 
