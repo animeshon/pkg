@@ -97,7 +97,7 @@ func PlaylistFullName(name string) (*Name, bool) {
 	return PlaylistName(strings.TrimPrefix(name, LibraryAPI))
 }
 
-func PlaylisyItemFullName(name string) (*Name, bool) {
+func PlaylistItemFullName(name string) (*Name, bool) {
 	if !strings.HasPrefix(name, LibraryAPI) {
 		return nil, false
 	}

@@ -40,7 +40,7 @@ func TestLibraryAPI(t *testing.T) {
 	require.True(t, ok)
 	assert.Equal(t, playlist.String(), playlistFull.String())
 
-	itemFull, ok := PlaylisyItemFullName("//library.animeapis.com/users/3134441396375598/playlists/6097286400577570/items/6097611928899618")
+	itemFull, ok := PlaylistItemFullName("//library.animeapis.com/users/3134441396375598/playlists/6097286400577570/items/6097611928899618")
 	require.True(t, ok)
 	assert.Equal(t, item.String(), itemFull.String())
 }
