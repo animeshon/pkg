@@ -39,4 +39,40 @@ func TestMultimediaAPI(t *testing.T) {
 	episodeFull, ok := EpisodeFullName("//multimedia.animeapis.com/animes/3134441396375598/episodes/6097286400577570")
 	require.True(t, ok)
 	assert.Equal(t, episode.String(), episodeFull.String())
+
+	anime, ok := AnimeName("animes/3134441396375598")
+	require.True(t, ok)
+	assert.Equal(t, "animes", anime.collection)
+	assert.Equal(t, int64(3134441396375598), anime.id)
+
+	animeFull, ok := AnimeFullName("//multimedia.animeapis.com/animes/3134441396375598")
+	require.True(t, ok)
+	assert.Equal(t, anime.String(), animeFull.String())
+
+	lightNovel, ok := LightNovelName("lightNovels/3134441396375598")
+	require.True(t, ok)
+	assert.Equal(t, "lightNovels", lightNovel.collection)
+	assert.Equal(t, int64(3134441396375598), lightNovel.id)
+
+	lightNovelFull, ok := LightNovelFullName("//multimedia.animeapis.com/lightNovels/3134441396375598")
+	require.True(t, ok)
+	assert.Equal(t, lightNovel.String(), lightNovelFull.String())
+
+	graphicNovel, ok := GraphicNovelName("graphicNovels/3134441396375598")
+	require.True(t, ok)
+	assert.Equal(t, "graphicNovels", graphicNovel.collection)
+	assert.Equal(t, int64(3134441396375598), graphicNovel.id)
+
+	graphicNovelFull, ok := GraphicNovelFullName("//multimedia.animeapis.com/graphicNovels/3134441396375598")
+	require.True(t, ok)
+	assert.Equal(t, graphicNovel.String(), graphicNovelFull.String())
+
+	visualNovel, ok := VisualNovelName("visualNovels/3134441396375598")
+	require.True(t, ok)
+	assert.Equal(t, "visualNovels", visualNovel.collection)
+	assert.Equal(t, int64(3134441396375598), visualNovel.id)
+
+	visualNovelFull, ok := VisualNovelFullName("//multimedia.animeapis.com/visualNovels/3134441396375598")
+	require.True(t, ok)
+	assert.Equal(t, visualNovel.String(), visualNovelFull.String())
 }
