@@ -18,7 +18,7 @@ func ChapterParentName(name string) (*Name, bool) {
 		return nil, false
 	}
 
-	if tokens[0] != "graphicNovels" {
+	if tokens[0] != "graphicNovels" && tokens[0] != "lightNovels" {
 		return nil, false
 	}
 
