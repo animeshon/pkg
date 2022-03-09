@@ -27,6 +27,13 @@ func TestMultimediaAPI(t *testing.T) {
 	assert.Equal(t, "lightNovels", chapter.Parent.collection)
 	assert.Equal(t, int64(3134441396375598), chapter.Parent.id)
 
+	chapterWildcard, ok := ChapterName("lightNovels/-/chapters/6097286400577570")
+	require.True(t, ok)
+	assert.Equal(t, "chapters", chapterWildcard.collection)
+	assert.Equal(t, int64(6097286400577570), chapterWildcard.id)
+	assert.Equal(t, "lightNovels", chapterWildcard.Parent.collection)
+	assert.Equal(t, "-", chapterWildcard.Parent.id)
+
 	chapterFull, ok := ChapterFullName("//multimedia.animeapis.com/lightNovels/3134441396375598/chapters/6097286400577570")
 	require.True(t, ok)
 	assert.Equal(t, chapter.String(), chapterFull.String())
@@ -42,6 +49,13 @@ func TestMultimediaAPI(t *testing.T) {
 	assert.Equal(t, int64(6097286400577570), episode.id)
 	assert.Equal(t, "animes", episode.Parent.collection)
 	assert.Equal(t, int64(3134441396375598), episode.Parent.id)
+
+	episodeWildcard, ok := EpisodeName("animes/-/episodes/6097286400577570")
+	require.True(t, ok)
+	assert.Equal(t, "episodes", episodeWildcard.collection)
+	assert.Equal(t, int64(6097286400577570), episodeWildcard.id)
+	assert.Equal(t, "animes", episodeWildcard.Parent.collection)
+	assert.Equal(t, "-", episodeWildcard.Parent.id)
 
 	episodeFull, ok := EpisodeFullName("//multimedia.animeapis.com/animes/3134441396375598/episodes/6097286400577570")
 	require.True(t, ok)

@@ -13,12 +13,19 @@ func ChapterParentName(name string) (*Name, bool) {
 		return nil, false
 	}
 
-	parentId, err := strconv.ParseInt(tokens[1], 10, 64)
-	if err != nil {
+	if tokens[0] != "graphicNovels" && tokens[0] != "lightNovels" {
 		return nil, false
 	}
 
-	if tokens[0] != "graphicNovels" && tokens[0] != "lightNovels" {
+	if tokens[1] == "-" {
+		return &Name{
+			collection: tokens[0],
+			id:         "-",
+		}, true
+	}
+
+	parentId, err := strconv.ParseInt(tokens[1], 10, 64)
+	if err != nil {
 		return nil, false
 	}
 
@@ -75,12 +82,19 @@ func EpisodeParentName(name string) (*Name, bool) {
 		return nil, false
 	}
 
-	parentId, err := strconv.ParseInt(tokens[1], 10, 64)
-	if err != nil {
+	if tokens[0] != "animes" {
 		return nil, false
 	}
 
-	if tokens[0] != "animes" {
+	if tokens[1] == "-" {
+		return &Name{
+			collection: tokens[0],
+			id:         "-",
+		}, true
+	}
+
+	parentId, err := strconv.ParseInt(tokens[1], 10, 64)
+	if err != nil {
 		return nil, false
 	}
 
