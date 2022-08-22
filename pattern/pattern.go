@@ -19,7 +19,7 @@ type Variable struct {
 	Value string `parser:"'{' @(Ident ( '.' Ident )*) '}'"`
 }
 
-var parser = participle.MustBuild(&Template{})
+var parser = participle.MustBuild[Template]()
 
 // Template = Segment { "/" Segment } ;
 // Segment = LITERAL | Variable ;
@@ -37,8 +37,8 @@ func MatchString(pattern, value string, all bool) bool {
 func FindString(pattern, value string, all bool) (map[string]string, bool) {
 	m := make(map[string]string)
 
-	ast := &Template{}
-	if err := parser.ParseString("", pattern, ast); err != nil {
+	ast, err := parser.ParseString("", pattern)
+	if err != nil {
 		return nil, false
 	}
 
@@ -67,8 +67,8 @@ func FindString(pattern, value string, all bool) (map[string]string, bool) {
 }
 
 func FindStringSubmatch(pattern, value string) (string, bool) {
-	ast := &Template{}
-	if err := parser.ParseString("", pattern, ast); err != nil {
+	ast, err := parser.ParseString("", pattern)
+	if err != nil {
 		return "", false
 	}
 
@@ -98,8 +98,8 @@ func FindStringSubmatch(pattern, value string) (string, bool) {
 }
 
 func ReplaceString(pattern string, variables map[string]string) (string, bool) {
-	ast := &Template{}
-	if err := parser.ParseString("", pattern, ast); err != nil {
+	ast, err := parser.ParseString("", pattern)
+	if err != nil {
 		return "", false
 	}
 
